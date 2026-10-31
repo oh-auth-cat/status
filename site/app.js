@@ -37,7 +37,7 @@ const STATE_TEXT = {
   ok: "Operational",
   partial: "Degraded",
   major: "Outage",
-  none: "Not monitored yet",
+  none: "Not live yet",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -122,33 +122,59 @@ function incidentNode(issue) {
     : `Investigating since ${formatTime(issue.created_at)}.`;
   return el("li", { class: "incident", dataset: { state } }, [
     el("div", { class: "incident-title" }, el("a", { href: issue.html_url, text: cleanTitle(issue.title) })),
-    el("p", { class: "incident-meta", text: meta }),
+    el("p", { class: "incident-meta mono", text: meta }),
   ]);
 }
 
-function renderBanner(sites, openIssues) {
-  const banner = $("banner");
+// The hero: headline, the "updated" stamp and the live panel.
+function renderHero(sites, openIssues) {
   const monitored = sites.length > 0;
-  const states = GROUPS.flatMap((g) => g.items).map((c) => currentState(sites.find((s) => s.slug === c.slug)));
+  const components = GROUPS.flatMap((g) => g.items);
+  const states = components.map((c) => currentState(sites.find((s) => s.slug === c.slug)));
   let state = "ok";
-  let title = "All systems operational";
-  let detail = "";
+  let headline = "All systems operational.";
+  let lede = "Sign-in, directory sync, the management API, the dashboard and the setup portal are all working normally.";
+  let pill = "All operational";
+  let foot = "Every check passed";
   if (!monitored) {
     state = "none";
-    title = "Monitoring starts on launch day";
-    detail = "OhAuthCat's production services go live on 3 November 2026. Uptime history begins then.";
+    headline = "Monitoring starts on launch day.";
+    lede = "OhAuthCat's production services go live on 3 November 2026. From then, every service is checked every 5 minutes and its history shows here.";
+    pill = "Not live yet";
+    foot = "Checks start 3 Nov 2026";
   } else if (states.includes("major") || openIssues.some((i) => incidentState(i) === "major")) {
     state = "major";
-    title = "Some systems are down";
-    detail = "We're working on it. Details are under Active incidents.";
+    headline = "Some systems are down.";
+    lede = "We know and we're working on it. The details and updates are under Active incidents below.";
+    pill = "Outage";
+    const n = states.filter((x) => x === "major").length;
+    foot = n === 1 ? "1 service down" : `${n} services down`;
   } else if (states.includes("partial") || openIssues.length) {
     state = "partial";
-    title = "Some systems are degraded";
-    detail = "Details are under Active incidents.";
+    headline = "Some systems are degraded.";
+    lede = "Everything is reachable, but some requests are slower or failing. The details are under Active incidents below.";
+    pill = "Degraded";
+    const n = states.filter((x) => x === "partial").length || 1;
+    foot = n === 1 ? "1 service degraded" : `${n} services degraded`;
   }
-  banner.dataset.state = state;
-  $("banner-title").textContent = title;
-  $("banner-detail").textContent = detail;
+  $("headline").textContent = headline;
+  $("lede").textContent = lede;
+  $("updated").textContent = `Updated ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`;
+  const pillNode = $("panel-pill");
+  pillNode.dataset.state = state;
+  pillNode.textContent = pill;
+  const footNode = $("panel-foot");
+  footNode.dataset.state = state;
+  $("foot-left").textContent = foot;
+  $("foot-right").textContent = monitored ? "every 5 min" : "";
+  $("now-rows").replaceChildren(...components.map((c, i) => {
+    const s = states[i];
+    return el("li", { class: "row", dataset: { state: s } }, [
+      el("span", { class: "mark", "aria-hidden": "true" }),
+      el("span", { class: "name" }, [document.createTextNode(c.name), el("small", { text: c.host })]),
+      el("span", { class: "state", text: STATE_TEXT[s] }),
+    ]);
+  }));
 }
 
 function renderActive(openIssues) {
@@ -161,7 +187,7 @@ function renderActive(openIssues) {
 function renderComponents(sites, issues) {
   const days = lastDays(DAYS);
   const groups = GROUPS.map((group) => el("div", { class: "group" }, [
-    el("h3", { class: "group-name", text: group.name }),
+    el("h3", { class: "group-name mono", text: group.name }),
     ...group.items.map((component) => {
       const site = sites.find((s) => s.slug === component.slug);
       const downtime = site ? site.dailyMinutesDown || {} : null;
@@ -169,7 +195,7 @@ function renderComponents(sites, issues) {
       const tracked = days.filter((d) => dayState(d, downtime) !== "none");
       const down = tracked.reduce((sum, d) => sum + (downtime[d] || 0), 0);
       const uptime = tracked.length
-        ? `${(100 * (1 - down / (tracked.length * 1440))).toFixed(2)}% uptime over ${DAYS} days`
+        ? `${(100 * (1 - down / (tracked.length * 1440))).toFixed(2)}% uptime`
         : "No data yet";
       const bars = el("div", {
         class: "bars",
@@ -183,15 +209,16 @@ function renderComponents(sites, issues) {
         el("div", { class: "component-head" }, [
           el("div", { class: "component-name" }, [
             document.createTextNode(component.name),
-            el("span", { class: "component-host", text: component.host }),
+            el("small", { class: "mono", text: component.host }),
           ]),
           el("span", { class: "pill", dataset: { state }, text: STATE_TEXT[state] }),
         ]),
         bars,
-        el("div", { class: "bars-foot" }, [
-          el("span", { class: "from-90", text: `${DAYS} days ago` }),
-          el("span", { class: "from-30", text: "30 days ago" }),
-          el("span", { text: uptime }),
+        el("div", { class: "bars-foot mono" }, [
+          el("span", {}, [el("span", { class: "from-90", text: `${DAYS} days ago` }), el("span", { class: "from-30", text: "30 days ago" })]),
+          el("span", { class: "rule" }),
+          el("span", { class: "pct", text: uptime }),
+          el("span", { class: "rule" }),
           el("span", { text: "Today" }),
         ]),
       ]);
@@ -209,15 +236,31 @@ function renderHistory(issues) {
     if (!byDay.has(key)) byDay.set(key, []);
     byDay.get(key).push(issue);
   }
-  $("history-list").replaceChildren(...days.map((d) => {
+  // Runs of quiet days collapse into one row, newest first.
+  const rows = [];
+  let quiet = [];
+  const flush = () => {
+    if (!quiet.length) return;
+    const label = quiet.length === 1
+      ? formatDay(quiet[0])
+      : `${formatDay(quiet[quiet.length - 1]).replace(/ \d{4}$/, "")} – ${formatDay(quiet[0])}`;
+    rows.push(el("li", { class: "day" }, [
+      el("h3", { class: "day-date mono", text: label }),
+      el("p", { class: "day-empty", text: "No incidents reported." }),
+    ]));
+    quiet = [];
+  };
+  for (const d of days) {
     const dayIssues = byDay.get(d) || [];
-    return el("li", { class: "day" }, [
-      el("h3", { class: "day-date", text: formatDay(d) }),
-      dayIssues.length
-        ? el("ol", { class: "incident-list" }, dayIssues.map(incidentNode))
-        : el("p", { class: "day-empty", text: "No incidents reported." }),
-    ]);
-  }));
+    if (!dayIssues.length) { quiet.push(d); continue; }
+    flush();
+    rows.push(el("li", { class: "day" }, [
+      el("h3", { class: "day-date mono", text: formatDay(d) }),
+      el("ol", { class: "incidents" }, dayIssues.map(incidentNode)),
+    ]));
+  }
+  flush();
+  $("history-list").replaceChildren(...rows);
 }
 
 function wireTooltips(issues) {
@@ -276,16 +319,14 @@ async function load() {
   }
   window.__sites = sites;
   const open = issues.filter((i) => i.state === "open");
+  renderHero(sites, open);
   if (failed) {
-    $("banner").dataset.state = "none";
-    $("banner-title").textContent = "Status data could not be loaded";
-    $("banner-detail").replaceChildren(
+    $("headline").textContent = "Status data could not be loaded.";
+    $("lede").replaceChildren(
       document.createTextNode("Try again in a minute, or see the incidents on "),
       el("a", { href: `https://github.com/${REPO}/issues`, text: "GitHub" }),
       document.createTextNode("."),
     );
-  } else {
-    renderBanner(sites, open);
   }
   renderActive(open);
   renderComponents(sites, issues);
