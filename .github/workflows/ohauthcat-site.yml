@@ -1,0 +1,36 @@
+# Publishes the OhAuthCat status page (site/) to GitHub Pages. Upptime keeps
+# running the checks and writing history/ and issues; the page reads that data
+# in the browser, so it only needs publishing when site/ changes. Upptime's
+# own Static Site CI is disabled so it never overwrites gh-pages.
+name: OhAuthCat status site
+on:
+  push:
+    branches: [master]
+    paths:
+      - "site/**"
+      - ".github/workflows/ohauthcat-site.yml"
+  workflow_dispatch:
+concurrency:
+  group: ohauthcat-status-site
+  cancel-in-progress: true
+permissions:
+  contents: write
+jobs:
+  publish:
+    name: Publish status page
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Add the custom domain
+        run: echo "status.ohauthcat.com" > site/CNAME
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: "OhAuthCat status"
+          user_email: "developers@ohauthcat.com"
+          commit_message: "publish the status page"

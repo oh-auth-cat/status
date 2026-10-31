@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OhAuthCat Status</title>
+<meta name="description" content="Live status, 90-day uptime and incident history for OhAuthCat sign-in, SCIM, the management API, the dashboard and the setup portal.">
+<link rel="icon" type="image/png" sizes="32x32" href="brand/favicon-32.png">
+<link rel="apple-touch-icon" href="brand/icon-256.png">
+<link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#f7f7fd" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f1d" media="(prefers-color-scheme: dark)">
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="https://ohauthcat.com" aria-label="OhAuthCat home">
+      <picture>
+        <source srcset="brand/logo-dark.svg" media="(prefers-color-scheme: dark)">
+        <img src="brand/logo-light.svg" alt="OhAuthCat" width="134" height="36">
+      </picture>
+    </a>
+    <nav class="top-links" aria-label="Status page links">
+      <a href="#incidents">Incident history</a>
+      <a href="https://github.com/oh-auth-cat/status/issues.atom" rel="alternate" type="application/atom+xml">Subscribe</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <section class="banner" id="banner" role="status" aria-live="polite" data-state="loading">
+    <span class="banner-dot" aria-hidden="true"></span>
+    <div>
+      <h1 id="banner-title">Checking status…</h1>
+      <p id="banner-detail" class="banner-detail"></p>
+    </div>
+  </section>
+
+  <section id="active" class="active" hidden aria-labelledby="active-title">
+    <h2 id="active-title">Active incidents</h2>
+    <ol id="active-list" class="incident-list"></ol>
+  </section>
+
+  <section class="components" aria-labelledby="components-title">
+    <div class="section-head">
+      <h2 id="components-title">System status</h2>
+      <p class="range" aria-hidden="true"><span class="from-90">Past 90 days</span><span class="from-30">Past 30 days</span></p>
+    </div>
+    <div id="groups"></div>
+    <div class="legend" aria-hidden="true">
+      <span><i class="sw sw-ok"></i>No downtime</span>
+      <span><i class="sw sw-partial"></i>Partial outage</span>
+      <span><i class="sw sw-major"></i>Major outage</span>
+      <span><i class="sw sw-none"></i>No data</span>
+    </div>
+  </section>
+
+  <section id="incidents" class="history" aria-labelledby="history-title">
+    <h2 id="history-title">Past incidents</h2>
+    <ol id="history-list" class="history-list"></ol>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <p>Checks run every 5 minutes from GitHub, outside our own infrastructure. Times are shown in your time zone.</p>
+    <p>If this address doesn't load, the same page is at <a href="https://oh-auth-cat.github.io/status/">oh-auth-cat.github.io/status</a>.</p>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+<script src="app.js" defer></script>
+</body>
+</html>
