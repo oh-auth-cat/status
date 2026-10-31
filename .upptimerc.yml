@@ -34,6 +34,17 @@ status-website:
   cname: status.ohauthcat.com
   logoUrl: https://ohauthcat.com/apple-touch-icon.png
   favicon: https://ohauthcat.com/favicon.ico
+  # OhAuthCat design tokens (ohauthcat-dashboard DESIGN.md §2.1), light and
+  # dark by the visitor's system setting. :root:root outranks the built-in
+  # themes whatever order the stylesheets load in.
+  css: >-
+    :root:root{--body-background-color:#f7f7fd;--body-text-color:#15152b;--card-background-color:#ffffff;--nav-background-color:#ffffff;--nav-border-bottom-color:#e7e6f3;--nav-current-border-bottom-color:#c94820;--card-border-color:#e7e6f3;--down-border-left-color:#c0163f;--down-background-color:#ffe9ef;--down-color-color:#c0163f;--degraded-border-left-color:#f59e0b;--degraded-color-color:#8f5300;--up-border-left-color:#22c55e;--up-color-color:#0d7a45;--tag-color:#ffffff;--tag-up-background-color:#0d7a45;--tag-down-background-color:#c0163f;--tag-degraded-background-color:#8f5300;--change-background-color:#f59e0b;--error-button-border-color:#b84019;--error-button-background-color:#c94820;--error-button-color:#ffffff;--submit-button-border-color:#b84019;--submit-button-background-color:#c94820;--submit-button-color:#ffffff;--code-background-color:#f0f0fa;--code-color:#15152b;--ohc-muted:#4d4d6b;--ohc-link:#a63413}
+    @media (prefers-color-scheme:dark){:root:root{--body-background-color:#0f0f1d;--body-text-color:#ededfb;--card-background-color:#15152a;--nav-background-color:#15152a;--nav-border-bottom-color:#272748;--nav-current-border-bottom-color:#f08a5d;--card-border-color:#272748;--down-border-left-color:#fb7185;--down-background-color:#3a1422;--down-color-color:#ff8fa6;--degraded-border-left-color:#fbbf24;--degraded-color-color:#fbc261;--up-border-left-color:#34d399;--up-color-color:#6ee7a6;--tag-color:#15152b;--tag-up-background-color:#6ee7a6;--tag-down-background-color:#ff8fa6;--tag-degraded-background-color:#fbc261;--change-background-color:#fbbf24;--error-button-border-color:#f7a07c;--error-button-background-color:#f08a5d;--error-button-color:#15152b;--submit-button-border-color:#f7a07c;--submit-button-background-color:#f08a5d;--submit-button-color:#15152b;--code-background-color:#0b0b17;--code-color:#ededfb;--ohc-muted:#b1b1d2;--ohc-link:#f08a5d}}
+    body{font-family:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-weight:600;letter-spacing:-0.01em;text-wrap:balance}
+    .container>p a,article p a{color:var(--ohc-link)}
+    article{border-radius:12px;border-left-width:4px}
+    article+article{margin-top:0.75rem}
   name: OhAuthCat status
   introTitle: "OhAuthCat status"
   introMessage: "Live status and uptime history of sign-in, SCIM, the management API, the dashboard and the setup portal. Incidents and post-mortems are posted here. Also at [oh-auth-cat.github.io/status](https://oh-auth-cat.github.io/status) if this domain does not resolve."
