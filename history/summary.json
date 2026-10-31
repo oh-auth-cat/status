@@ -5,18 +5,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/auth.ohauthcat.com.ico",
     "slug": "sign-in",
     "status": "down",
-    "uptime": "17.17%",
-    "uptimeDay": "17.17%",
-    "uptimeWeek": "17.17%",
-    "uptimeMonth": "17.17%",
-    "uptimeYear": "17.17%",
+    "uptime": "3.06%",
+    "uptimeDay": "3.06%",
+    "uptimeWeek": "3.06%",
+    "uptimeMonth": "3.06%",
+    "uptimeYear": "3.06%",
     "time": 0,
     "timeDay": 0,
     "timeWeek": 0,
     "timeMonth": 0,
     "timeYear": 0,
     "dailyMinutesDown": {
-      "2026-10-31": 2
+      "2026-10-31": 12
     }
   },
   {
@@ -25,18 +25,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/signin.ohauthcat.com.ico",
     "slug": "hosted-sign-in",
     "status": "down",
-    "uptime": "16.94%",
-    "uptimeDay": "16.94%",
-    "uptimeWeek": "16.94%",
-    "uptimeMonth": "16.94%",
-    "uptimeYear": "16.94%",
-    "time": 1257,
-    "timeDay": 1257,
-    "timeWeek": 1257,
-    "timeMonth": 1257,
-    "timeYear": 1257,
+    "uptime": "2.39%",
+    "uptimeDay": "2.39%",
+    "uptimeWeek": "2.39%",
+    "uptimeMonth": "2.39%",
+    "uptimeYear": "2.39%",
+    "time": 1160,
+    "timeDay": 1160,
+    "timeWeek": 1160,
+    "timeMonth": 1160,
+    "timeYear": 1160,
     "dailyMinutesDown": {
-      "2026-10-31": 1
+      "2026-10-31": 11
     }
   },
   {
@@ -45,18 +45,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/scim.ohauthcat.com.ico",
     "slug": "scim",
     "status": "down",
-    "uptime": "26.54%",
-    "uptimeDay": "26.54%",
-    "uptimeWeek": "26.54%",
-    "uptimeMonth": "26.54%",
-    "uptimeYear": "26.54%",
+    "uptime": "3.12%",
+    "uptimeDay": "3.12%",
+    "uptimeWeek": "3.12%",
+    "uptimeMonth": "3.12%",
+    "uptimeYear": "3.12%",
     "time": 0,
     "timeDay": 0,
     "timeWeek": 0,
     "timeMonth": 0,
     "timeYear": 0,
     "dailyMinutesDown": {
-      "2026-10-31": 1
+      "2026-10-31": 11
     }
   },
   {
@@ -65,18 +65,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/api.ohauthcat.com.ico",
     "slug": "management-api",
     "status": "down",
-    "uptime": "40.06%",
-    "uptimeDay": "40.06%",
-    "uptimeWeek": "40.06%",
-    "uptimeMonth": "40.06%",
-    "uptimeYear": "40.06%",
+    "uptime": "3.36%",
+    "uptimeDay": "3.36%",
+    "uptimeWeek": "3.36%",
+    "uptimeMonth": "3.36%",
+    "uptimeYear": "3.36%",
     "time": 0,
     "timeDay": 0,
     "timeWeek": 0,
     "timeMonth": 0,
     "timeYear": 0,
     "dailyMinutesDown": {
-      "2026-10-31": 1
+      "2026-10-31": 11
     }
   },
   {
@@ -90,11 +90,11 @@
     "uptimeWeek": "100.00%",
     "uptimeMonth": "100.00%",
     "uptimeYear": "100.00%",
-    "time": 951,
-    "timeDay": 951,
-    "timeWeek": 951,
-    "timeMonth": 951,
-    "timeYear": 951,
+    "time": 905,
+    "timeDay": 905,
+    "timeWeek": 905,
+    "timeMonth": 905,
+    "timeYear": 905,
     "dailyMinutesDown": {}
   },
   {
@@ -103,18 +103,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/connect.ohauthcat.com.ico",
     "slug": "setup-portal",
     "status": "down",
-    "uptime": "53.29%",
-    "uptimeDay": "53.29%",
-    "uptimeWeek": "53.29%",
-    "uptimeMonth": "53.29%",
-    "uptimeYear": "53.29%",
-    "time": 734,
-    "timeDay": 734,
-    "timeWeek": 734,
-    "timeMonth": 734,
-    "timeYear": 734,
+    "uptime": "2.54%",
+    "uptimeDay": "2.54%",
+    "uptimeWeek": "2.54%",
+    "uptimeMonth": "2.54%",
+    "uptimeYear": "2.54%",
+    "time": 765,
+    "timeDay": 765,
+    "timeWeek": 765,
+    "timeMonth": 765,
+    "timeYear": 765,
     "dailyMinutesDown": {
-      "2026-10-31": 0
+      "2026-10-31": 10
     }
   }
 ]
