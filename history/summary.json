@@ -1,0 +1,120 @@
+[
+  {
+    "name": "Sign-in",
+    "url": "https://auth.ohauthcat.com/healthz",
+    "icon": "https://icons.duckduckgo.com/ip3/auth.ohauthcat.com.ico",
+    "slug": "sign-in",
+    "status": "down",
+    "uptime": "18.22%",
+    "uptimeDay": "18.22%",
+    "uptimeWeek": "18.22%",
+    "uptimeMonth": "18.22%",
+    "uptimeYear": "18.22%",
+    "time": 0,
+    "timeDay": 0,
+    "timeWeek": 0,
+    "timeMonth": 0,
+    "timeYear": 0,
+    "dailyMinutesDown": {
+      "2026-10-31": 2
+    }
+  },
+  {
+    "name": "Hosted sign-in pages",
+    "url": "https://signin.ohauthcat.com/",
+    "icon": "https://icons.duckduckgo.com/ip3/signin.ohauthcat.com.ico",
+    "slug": "hosted-sign-in",
+    "status": "down",
+    "uptime": "18.26%",
+    "uptimeDay": "18.26%",
+    "uptimeWeek": "18.26%",
+    "uptimeMonth": "18.26%",
+    "uptimeYear": "18.26%",
+    "time": 1257,
+    "timeDay": 1257,
+    "timeWeek": 1257,
+    "timeMonth": 1257,
+    "timeYear": 1257,
+    "dailyMinutesDown": {
+      "2026-10-31": 1
+    }
+  },
+  {
+    "name": "SCIM",
+    "url": "https://scim.ohauthcat.com/healthz",
+    "icon": "https://icons.duckduckgo.com/ip3/scim.ohauthcat.com.ico",
+    "slug": "scim",
+    "status": "down",
+    "uptime": "29.29%",
+    "uptimeDay": "29.29%",
+    "uptimeWeek": "29.29%",
+    "uptimeMonth": "29.29%",
+    "uptimeYear": "29.29%",
+    "time": 0,
+    "timeDay": 0,
+    "timeWeek": 0,
+    "timeMonth": 0,
+    "timeYear": 0,
+    "dailyMinutesDown": {
+      "2026-10-31": 1
+    }
+  },
+  {
+    "name": "Management API",
+    "url": "https://api.ohauthcat.com/healthz",
+    "icon": "https://icons.duckduckgo.com/ip3/api.ohauthcat.com.ico",
+    "slug": "management-api",
+    "status": "down",
+    "uptime": "46.14%",
+    "uptimeDay": "46.14%",
+    "uptimeWeek": "46.14%",
+    "uptimeMonth": "46.14%",
+    "uptimeYear": "46.14%",
+    "time": 0,
+    "timeDay": 0,
+    "timeWeek": 0,
+    "timeMonth": 0,
+    "timeYear": 0,
+    "dailyMinutesDown": {
+      "2026-10-31": 0
+    }
+  },
+  {
+    "name": "Dashboard",
+    "url": "https://console.ohauthcat.com/",
+    "icon": "https://icons.duckduckgo.com/ip3/console.ohauthcat.com.ico",
+    "slug": "dashboard",
+    "status": "up",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
+    "time": 951,
+    "timeDay": 951,
+    "timeWeek": 951,
+    "timeMonth": 951,
+    "timeYear": 951,
+    "dailyMinutesDown": {}
+  },
+  {
+    "name": "Setup portal",
+    "url": "https://connect.ohauthcat.com/",
+    "icon": "https://icons.duckduckgo.com/ip3/connect.ohauthcat.com.ico",
+    "slug": "setup-portal",
+    "status": "down",
+    "uptime": "69.77%",
+    "uptimeDay": "69.77%",
+    "uptimeWeek": "69.77%",
+    "uptimeMonth": "69.77%",
+    "uptimeYear": "69.77%",
+    "time": 734,
+    "timeDay": 734,
+    "timeWeek": 734,
+    "timeMonth": 734,
+    "timeYear": 734,
+    "dailyMinutesDown": {
+      "2026-10-31": 0
+    }
+  }
+]
