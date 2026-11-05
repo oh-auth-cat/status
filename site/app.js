@@ -138,10 +138,10 @@ function renderHero(sites, openIssues) {
   let foot = "Every check passed";
   if (!monitored) {
     state = "none";
-    headline = "Monitoring starts on launch day.";
-    lede = "OhAuthCat's production services go live on 3 November 2026. From then, every service is checked every 5 minutes and its history shows here.";
+    headline = "Monitoring starts at launch.";
+    lede = "OhAuthCat's production services are not live yet. From launch, every service is checked every 5 minutes and its history shows here.";
     pill = "Not live yet";
-    foot = "Checks start 3 Nov 2026";
+    foot = "Checks start at launch";
   } else if (states.includes("major") || openIssues.some((i) => incidentState(i) === "major")) {
     state = "major";
     headline = "Some systems are down.";
