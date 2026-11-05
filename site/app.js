@@ -78,7 +78,7 @@ function formatDay(key) {
 
 function formatTime(iso) {
   return new Date(iso).toLocaleString(undefined, {
-    day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+    day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZoneName: "short",
   });
 }
 
@@ -159,7 +159,10 @@ function renderHero(sites, openIssues) {
   }
   $("headline").textContent = headline;
   $("lede").textContent = lede;
-  $("updated").textContent = `Updated ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`;
+  const now = new Date();
+  const updated = $("updated");
+  updated.textContent = `Updated ${now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}`;
+  updated.title = now.toISOString().replace(/\.\d{3}Z$/, "Z");
   const pillNode = $("panel-pill");
   pillNode.dataset.state = state;
   pillNode.textContent = pill;
