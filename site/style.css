@@ -44,8 +44,10 @@
   color-scheme: light;
 }
 
+/* Dark follows the OS unless the theme control says Light, and always
+   applies when it says Dark (dashboard DESIGN.md §5.11). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --canvas: #0f0f1d;
     --surface: #15152a;
     --sunken: #0b0b17;
@@ -73,6 +75,35 @@
     --tip-text: #15152b;
     color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --canvas: #0f0f1d;
+  --surface: #15152a;
+  --sunken: #0b0b17;
+  --text: #ededfb;
+  --muted: #b1b1d2;
+  --line: #272748;
+  --accent: #f08a5d;
+  --accent-text: #f08a5d;
+  --accent-subtle: #2d1e1a;
+  --on-accent: #15152b;
+  --ok: #6ee7a6;
+  --ok-bg: rgb(52 211 153 / 0.14);
+  --ok-bar: #34d399;
+  --warn: #fbc261;
+  --warn-bg: rgb(251 191 36 / 0.14);
+  --warn-bar: #fbbf24;
+  --bad: #ff8fa6;
+  --bad-bg: rgb(251 113 133 / 0.16);
+  --bad-bar: #fb7185;
+  --idle: #c6c6e0;
+  --idle-bg: #24243f;
+  --idle-bar: #242443;
+  --shadow-md: 0 0 0 1px rgb(255 255 255 / 0.03), 0 8px 24px rgb(0 0 0 / 0.35);
+  --tip-bg: #ededfb;
+  --tip-text: #15152b;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -353,3 +384,25 @@ h2 {
   html { scroll-behavior: auto; }
 }
 .addr { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Logo per theme. */
+.brand .logo-dark { display: none; }
+:root[data-theme="dark"] .brand .logo-light { display: none; }
+:root[data-theme="dark"] .brand .logo-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand .logo-light { display: none; }
+  :root:not([data-theme="light"]) .brand .logo-dark { display: block; }
+}
+
+/* Theme control (dashboard DESIGN.md §5.11). */
+.theme-control { display: grid; gap: 6px; margin: 0.75rem 0 0; padding: 0; border: 0; }
+.theme-control legend { padding: 0; color: var(--muted); font-size: 0.8rem; font-weight: 500; }
+.theme-options { display: inline-flex; justify-self: start; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: 999px; background: var(--canvas); }
+.theme-option { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border-radius: 999px; color: var(--muted); font-size: 0.85rem; cursor: pointer; }
+.theme-option input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.theme-option svg { width: 14px; height: 14px; flex: none; }
+.theme-label { display: inline-grid; }
+.theme-label::after { content: attr(data-label); height: 0; font-weight: 600; visibility: hidden; user-select: none; }
+.theme-option:has(input:checked) { background: var(--surface); color: var(--text); font-weight: 600; box-shadow: inset 0 0 0 1px var(--muted), 0 1px 2px rgb(21 21 43 / 0.06); }
+.theme-option:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 860px) { .theme-option { min-height: 44px; } }
