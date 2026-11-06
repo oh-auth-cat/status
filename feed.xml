@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://status.ohauthcat.com/feed.xml</id>
+  <title>OhAuthCat status: incidents</title>
+  <link rel="alternate" href="https://status.ohauthcat.com/"/>
+  <link rel="self" href="https://status.ohauthcat.com/feed.xml"/>
+  <updated>2026-11-06T12:36:03.068Z</updated>
+  <author><name>OhAuthCat</name></author>
+</feed>

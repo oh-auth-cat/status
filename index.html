@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OhAuthCat Status</title>
+<meta name="description" content="Live status, 90-day uptime and incident history for OhAuthCat sign-in, SCIM, the management API, the dashboard and the setup portal.">
+<link rel="icon" type="image/png" sizes="32x32" href="brand/favicon-32.png">
+<link rel="apple-touch-icon" href="brand/icon-256.png">
+<link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#f7f7fd" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f1d" media="(prefers-color-scheme: dark)">
+<script src="theme-init.js"></script>
+<link rel="stylesheet" href="style.css?v=3">
+<link rel="alternate" type="application/atom+xml" title="OhAuthCat status incidents" href="feed.xml">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav class="nav" aria-label="Site">
+      <a class="brand" href="https://ohauthcat.com" aria-label="OhAuthCat home">
+        <img class="logo-light" src="brand/logo-light.svg" alt="OhAuthCat" width="160" height="43">
+        <img class="logo-dark" src="brand/logo-dark.svg" alt="" width="160" height="43">
+      </a>
+      <div class="nav-links">
+        <a href="#history">Incident history</a>
+        <a href="feed.xml" rel="alternate" type="application/atom+xml">Subscribe</a>
+      </div>
+    </nav>
+
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="mono kicker"><span>Status</span> <b id="updated">Checking…</b></p>
+        <h1 id="headline">Checking every service.</h1>
+        <p class="lede" id="lede">Live status of OhAuthCat sign-in, directory sync, the management API, the dashboard and the setup portal.</p>
+        <div class="actions">
+          <a class="button" href="feed.xml" type="application/atom+xml">Subscribe to updates</a>
+          <a class="mono addr" href="mailto:support@ohauthcat.com">support@ohauthcat.com</a>
+        </div>
+      </div>
+
+      <section class="panel" aria-labelledby="panel-title">
+        <div class="panel-head mono">
+          <div>
+            <small>Right now</small>
+            <span id="panel-title">Every service</span>
+          </div>
+          <span class="pill" id="panel-pill" data-state="none">Checking</span>
+        </div>
+        <ol class="rows" id="now-rows"></ol>
+        <div class="panel-foot mono" id="panel-foot">
+          <span id="foot-left">Checks run every 5 minutes</span>
+          <span id="foot-right"></span>
+        </div>
+      </section>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="wrap block" id="active" hidden aria-labelledby="active-title">
+    <h2 id="active-title">Active incidents</h2>
+    <ol class="incidents" id="active-list"></ol>
+  </section>
+
+  <section class="wrap block" aria-labelledby="uptime-title">
+    <div class="block-head">
+      <h2 id="uptime-title">Uptime, day by day.</h2>
+      <p class="sub">Each bar is one day. <span class="from-90">The past 90 days, oldest on the left.</span><span class="from-30">The past 30 days, oldest on the left.</span></p>
+    </div>
+    <div id="groups" class="groups"></div>
+    <div class="legend mono" aria-hidden="true">
+      <span><i class="sw" data-state="ok"></i>No downtime</span>
+      <span><i class="sw" data-state="partial"></i>Partial outage</span>
+      <span><i class="sw" data-state="major"></i>Major outage</span>
+      <span><i class="sw" data-state="none"></i>No data</span>
+    </div>
+  </section>
+
+  <section class="wrap block" id="history" aria-labelledby="history-title">
+    <div class="block-head">
+      <h2 id="history-title">Incident history.</h2>
+      <p class="sub">The past 14 days. Each incident links to its full timeline.</p>
+    </div>
+    <ol class="days" id="history-list"></ol>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <p>Checks run every 5 minutes from GitHub, outside our own infrastructure. Times are in your time zone.</p>
+    <p>If this address doesn't load, the same page is at <a href="https://oh-auth-cat.github.io/status/">oh-auth-cat.github.io/status</a>.</p>
+    <fieldset class="theme-control">
+      <legend>Theme</legend>
+      <div class="theme-options">
+        <label class="theme-option"><input type="radio" name="theme" value="system" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="theme-label" data-label="System">System</span></label>
+        <label class="theme-option"><input type="radio" name="theme" value="light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="theme-label" data-label="Light">Light</span></label>
+        <label class="theme-option"><input type="radio" name="theme" value="dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="theme-label" data-label="Dark">Dark</span></label>
+      </div>
+    </fieldset>
+  </div>
+</footer>
+
+<div class="tip mono" id="tip" role="tooltip" hidden></div>
+<script src="app.js?v=2" defer></script>
+<script src="theme.js" defer></script>
+</body>
+</html>
