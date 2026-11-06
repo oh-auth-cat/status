@@ -246,7 +246,7 @@ function renderHistory(issues) {
     if (!quiet.length) return;
     const label = quiet.length === 1
       ? formatDay(quiet[0])
-      : `${formatDay(quiet[quiet.length - 1]).replace(/ \d{4}$/, "")} – ${formatDay(quiet[0])}`;
+      : `${formatDay(quiet[quiet.length - 1]).replace(/,? \d{4}$/, "")} – ${formatDay(quiet[0])}`;
     rows.push(el("li", { class: "day" }, [
       el("h3", { class: "day-date mono", text: label }),
       el("p", { class: "day-empty", text: "No incidents reported." }),
