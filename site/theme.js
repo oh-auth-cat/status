@@ -18,9 +18,24 @@
     }
   }
 
+  var BAR = { light: "#f7f7fd", dark: "#0f0f1d" };
+
+  // System keeps one tag per OS scheme; a forced theme uses its own colour.
+  function applyBar(choice) {
+    var tags = document.querySelectorAll('meta[name="theme-color"]');
+    var schemes = ["light", "dark"];
+    for (var i = 0; i < tags.length && i < 2; i++) {
+      var scheme = choice === "system" ? schemes[i] : choice;
+      tags[i].setAttribute("content", BAR[scheme]);
+      if (choice === "system") tags[i].setAttribute("media", "(prefers-color-scheme: " + scheme + ")");
+      else tags[i].removeAttribute("media");
+    }
+  }
+
   function apply(choice) {
     if (choice === "system") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", choice);
+    applyBar(choice);
     for (var i = 0; i < inputs.length; i++) inputs[i].checked = inputs[i].value === choice;
   }
 
