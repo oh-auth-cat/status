@@ -115,13 +115,24 @@ function incidentState(issue) {
   return /degraded/i.test(issue.title) ? "partial" : "major";
 }
 
+// Only a GitHub issue URL becomes a link; anything else stays plain text.
+function safeIssueUrl(url) {
+  return typeof url === "string" && url.startsWith("https://github.com/") ? url : null;
+}
+
+function incidentLink(issue) {
+  const text = cleanTitle(String(issue.title || ""));
+  const href = safeIssueUrl(issue.html_url);
+  return href ? el("a", { href, text }) : el("span", { text });
+}
+
 function incidentNode(issue) {
   const state = incidentState(issue);
   const meta = issue.state === "closed"
     ? `Resolved ${formatTime(issue.closed_at)}. Lasted ${minutesText(Math.max(1, Math.round((new Date(issue.closed_at) - new Date(issue.created_at)) / 60000)))}.`
     : `Investigating since ${formatTime(issue.created_at)}.`;
   return el("li", { class: "incident", dataset: { state } }, [
-    el("div", { class: "incident-title" }, el("a", { href: issue.html_url, text: cleanTitle(issue.title) })),
+    el("div", { class: "incident-title" }, incidentLink(issue)),
     el("p", { class: "incident-meta mono", text: meta }),
   ]);
 }
@@ -187,7 +198,7 @@ function renderActive(openIssues) {
   section.hidden = openIssues.length === 0;
 }
 
-function renderComponents(sites, issues) {
+function renderComponents(sites, issues, loading = false) {
   const days = lastDays(DAYS);
   const groups = GROUPS.map((group) => el("div", { class: "group" }, [
     el("h3", { class: "group-name mono", text: group.name }),
@@ -197,7 +208,7 @@ function renderComponents(sites, issues) {
       const state = currentState(site);
       const tracked = days.filter((d) => dayState(d, downtime) !== "none");
       const down = tracked.reduce((sum, d) => sum + (downtime[d] || 0), 0);
-      const uptime = tracked.length
+      const uptime = loading ? "Checking…" : tracked.length
         ? `${(100 * (1 - down / (tracked.length * 1440))).toFixed(2)}% uptime`
         : "No data yet";
       const bars = el("div", {
@@ -214,7 +225,7 @@ function renderComponents(sites, issues) {
             document.createTextNode(component.name),
             el("small", { class: "mono", text: component.host }),
           ]),
-          el("span", { class: "pill", dataset: { state }, text: STATE_TEXT[state] }),
+          el("span", { class: "pill", dataset: { state: loading ? "none" : state }, text: loading ? "Checking" : STATE_TEXT[state] }),
         ]),
         bars,
         el("div", { class: "bars-foot mono" }, [
@@ -299,6 +310,21 @@ function wireTooltips(issues) {
   window.addEventListener("scroll", hide, { passive: true });
 }
 
+// Before the data arrives, draw every block at its final size so nothing
+// below moves when the real content replaces it.
+function renderSkeleton() {
+  $("now-rows").replaceChildren(...GROUPS.flatMap((g) => g.items).map((c) => el("li", { class: "row", dataset: { state: "none" } }, [
+    el("span", { class: "mark", "aria-hidden": "true" }),
+    el("span", { class: "name" }, [document.createTextNode(c.name), el("small", { text: c.host })]),
+    el("span", { class: "state", text: "Checking" }),
+  ])));
+  renderComponents([], [], true);
+  $("history-list").replaceChildren(el("li", { class: "day" }, [
+    el("h3", { class: "day-date mono", text: "Past 14 days" }),
+    el("p", { class: "day-empty", text: "Checking for incidents…" }),
+  ]));
+}
+
 async function load() {
   let sites = [];
   let issues = [];
@@ -336,5 +362,7 @@ async function load() {
   renderHistory(issues);
 }
 
+window.__sites = [];
+renderSkeleton();
 load();
 setInterval(load, 5 * 60 * 1000);
