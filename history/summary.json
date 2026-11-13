@@ -23,18 +23,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/signin.ohauthcat.com.ico",
     "slug": "hosted-sign-in",
     "status": "down",
-    "uptime": "50.30%",
-    "uptimeDay": "50.30%",
-    "uptimeWeek": "50.30%",
-    "uptimeMonth": "50.30%",
-    "uptimeYear": "50.30%",
+    "uptime": "0.89%",
+    "uptimeDay": "0.89%",
+    "uptimeWeek": "0.89%",
+    "uptimeMonth": "0.89%",
+    "uptimeYear": "0.89%",
     "time": 1260,
     "timeDay": 1459,
     "timeWeek": 1459,
     "timeMonth": 1260,
     "timeYear": 1260,
     "dailyMinutesDown": {
-      "2026-11-13": 0
+      "2026-11-13": 33
     }
   },
   {
