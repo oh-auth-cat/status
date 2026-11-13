@@ -7,7 +7,7 @@
 const REPO = "ohauthcat/status";
 // A local preview (localhost) reads the sample data in ../preview instead.
 const PREVIEW = location.hostname === "localhost";
-const SUMMARY_URL = PREVIEW ? "../preview/summary.json" : `https://raw.githubusercontent.com/${REPO}/master/history/summary.json`;
+const SUMMARY_URL = PREVIEW ? "../preview/summary.json" : `https://raw.githubusercontent.com/${REPO}/main/history/summary.json`;
 const ISSUES_URL = PREVIEW ? "../preview/issues.json" : `https://api.github.com/repos/${REPO}/issues?state=all&labels=status&per_page=100`;
 const DAYS = 90;
 const HISTORY_DAYS = 14;

@@ -7,7 +7,7 @@
 name: OhAuthCat status site
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - "site/**"
       - ".github/workflows/ohauthcat-site.yml"
