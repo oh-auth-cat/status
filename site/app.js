@@ -1,20 +1,24 @@
 // OhAuthCat status page. Reads Upptime's data from this repository at view
 // time (history/summary.json for current state and daily downtime, issues
 // labelled "status" for incidents), so the page needs no rebuild when a
-// check runs.
+// check runs. It first draws the last known state (snapshot.js, written when
+// the page is published, or the visitor's own cached copy if newer), so no
+// row ever flashes an unknown state while the live data loads.
 "use strict";
+
+const { dayKey, dayState: coreDayState, uptimePercent, parseStartTime, pickSnapshot } = window.OhcStatus;
 
 const REPO = "ohauthcat/status";
 // A local preview (localhost) reads the sample data in ../preview instead.
 const PREVIEW = location.hostname === "localhost";
 const SUMMARY_URL = PREVIEW ? "../preview/summary.json" : `https://raw.githubusercontent.com/${REPO}/main/history/summary.json`;
 const ISSUES_URL = PREVIEW ? "../preview/issues.json" : `https://api.github.com/repos/${REPO}/issues?state=all&labels=status&per_page=100`;
+const HISTORY_YML = (slug) => PREVIEW ? null : `https://raw.githubusercontent.com/${REPO}/main/history/${slug}.yml`;
+const CACHE_KEY = "ohauthcat.status.last";
 const DAYS = 90;
 const HISTORY_DAYS = 14;
 // Days before production monitoring began show as "No data".
 const MONITORING_START = PREVIEW ? "2026-08-01" : "2026-11-03";
-// A day with this many minutes down or more is a major outage.
-const MAJOR_MINUTES = 60;
 
 const GROUPS = [
   { name: "Sign-in", items: [
@@ -54,11 +58,6 @@ function el(tag, attrs = {}, children = []) {
   return node;
 }
 
-// YYYY-MM-DD in UTC, the key Upptime uses for daily downtime.
-function dayKey(date) {
-  return date.toISOString().slice(0, 10);
-}
-
 function lastDays(count) {
   const out = [];
   const today = new Date();
@@ -89,13 +88,11 @@ function minutesText(minutes) {
   return m ? `${h} h ${m} min` : `${h} h`;
 }
 
-function dayState(key, downtime) {
-  if (key < MONITORING_START || key > dayKey(new Date())) return "none";
-  if (!downtime) return "none";
-  const minutes = downtime[key] || 0;
-  if (minutes >= MAJOR_MINUTES) return "major";
-  if (minutes > 0) return "partial";
-  return "ok";
+// First check day per site slug (from history/<slug>.yml startTime).
+let SINCE = {};
+
+function dayState(key, site) {
+  return coreDayState(key, site, SINCE[site ? site.slug : ""] || null, MONITORING_START, dayKey(new Date()));
 }
 
 function currentState(site) {
@@ -137,8 +134,9 @@ function incidentNode(issue) {
   ]);
 }
 
-// The hero: headline, the "updated" stamp and the live panel.
-function renderHero(sites, openIssues) {
+// The hero: headline, the "updated" stamp and the live panel. `at` is when
+// the data shown was read.
+function renderHero(sites, openIssues, at = new Date()) {
   const monitored = sites.length > 0;
   const components = GROUPS.flatMap((g) => g.items);
   const states = components.map((c) => currentState(sites.find((s) => s.slug === c.slug)));
@@ -170,10 +168,12 @@ function renderHero(sites, openIssues) {
   }
   $("headline").textContent = headline;
   $("lede").textContent = lede;
-  const now = new Date();
   const updated = $("updated");
-  updated.textContent = `Updated ${now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}`;
-  updated.title = now.toISOString().replace(/\.\d{3}Z$/, "Z");
+  const sameDay = at.toDateString() === new Date().toDateString();
+  updated.textContent = `Updated ${sameDay
+    ? at.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" })
+    : formatTime(at.toISOString())}`;
+  updated.title = at.toISOString().replace(/\.\d{3}Z$/, "Z");
   const pillNode = $("panel-pill");
   pillNode.dataset.state = state;
   pillNode.textContent = pill;
@@ -199,25 +199,24 @@ function renderActive(openIssues) {
 }
 
 function renderComponents(sites, issues, loading = false) {
+  const today = dayKey(new Date());
   const days = lastDays(DAYS);
   const groups = GROUPS.map((group) => el("div", { class: "group" }, [
     el("h3", { class: "group-name mono", text: group.name }),
     ...group.items.map((component) => {
       const site = sites.find((s) => s.slug === component.slug);
-      const downtime = site ? site.dailyMinutesDown || {} : null;
       const state = currentState(site);
-      const tracked = days.filter((d) => dayState(d, downtime) !== "none");
-      const down = tracked.reduce((sum, d) => sum + (downtime[d] || 0), 0);
-      const uptime = loading ? "Checking…" : tracked.length
-        ? `${(100 * (1 - down / (tracked.length * 1440))).toFixed(2)}% uptime`
-        : "No data yet";
+      const pct = uptimePercent(days, site, SINCE[component.slug] || null, MONITORING_START, today);
+      const pct30 = uptimePercent(days.slice(-30), site, SINCE[component.slug] || null, MONITORING_START, today);
+      const label = (p) => (loading ? "Loading" : p === null ? "No data yet" : `${p.toFixed(2)}% uptime`);
+      const uptime = label(pct);
       const bars = el("div", {
         class: "bars",
         role: "img",
         "aria-label": `${component.name}: ${uptime} over the past ${DAYS} days`,
       }, days.map((d) => el("span", {
         class: "bar",
-        dataset: { state: dayState(d, downtime), day: d, slug: component.slug },
+        dataset: { state: loading ? "none" : dayState(d, site), day: d, slug: component.slug },
       })));
       return el("div", { class: "component" }, [
         el("div", { class: "component-head" }, [
@@ -225,13 +224,14 @@ function renderComponents(sites, issues, loading = false) {
             document.createTextNode(component.name),
             el("small", { class: "mono", text: component.host }),
           ]),
-          el("span", { class: "pill", dataset: { state: loading ? "none" : state }, text: loading ? "Checking" : STATE_TEXT[state] }),
+          el("span", { class: "pill", dataset: { state: loading ? "none" : state }, text: loading ? "Loading" : STATE_TEXT[state] }),
         ]),
         bars,
         el("div", { class: "bars-foot mono" }, [
           el("span", {}, [el("span", { class: "from-90", text: `${DAYS} days ago` }), el("span", { class: "from-30", text: "30 days ago" })]),
           el("span", { class: "rule" }),
-          el("span", { class: "pct", text: uptime }),
+          // Narrow screens show only the last 30 bars, so the figure matches.
+          el("span", { class: "pct" }, [el("span", { class: "from-90", text: uptime }), el("span", { class: "from-30", text: label(pct30) })]),
           el("span", { class: "rule" }),
           el("span", { text: "Today" }),
         ]),
@@ -310,59 +310,120 @@ function wireTooltips(issues) {
   window.addEventListener("scroll", hide, { passive: true });
 }
 
-// Before the data arrives, draw every block at its final size so nothing
-// below moves when the real content replaces it.
+// Only when no snapshot exists at all (snapshot.js missing and nothing
+// cached): draw every block at its final size so nothing below moves when the
+// real content replaces it.
 function renderSkeleton() {
   $("now-rows").replaceChildren(...GROUPS.flatMap((g) => g.items).map((c) => el("li", { class: "row", dataset: { state: "none" } }, [
     el("span", { class: "mark", "aria-hidden": "true" }),
     el("span", { class: "name" }, [document.createTextNode(c.name), el("small", { text: c.host })]),
-    el("span", { class: "state", text: "Checking" }),
+    el("span", { class: "state", text: "Loading" }),
   ])));
   renderComponents([], [], true);
   $("history-list").replaceChildren(el("li", { class: "day" }, [
     el("h3", { class: "day-date mono", text: "Past 14 days" }),
-    el("p", { class: "day-empty", text: "Checking for incidents…" }),
+    el("p", { class: "day-empty", text: "Loading incidents" }),
   ]));
 }
 
+function render(sites, issues, at) {
+  window.__sites = sites;
+  const open = issues.filter((i) => i.state === "open");
+  renderHero(sites, open, at);
+  renderActive(open);
+  renderComponents(sites, issues);
+  renderHistory(issues);
+}
+
+function readCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(snapshot) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(snapshot));
+  } catch {
+    // Storage full or blocked: the build-time snapshot still covers the next visit.
+  }
+}
+
+// The first check day of each site, read live from history/<slug>.yml.
+async function loadSince() {
+  const slugs = GROUPS.flatMap((g) => g.items.map((c) => c.slug));
+  const found = await Promise.all(slugs.map(async (slug) => {
+    const url = HISTORY_YML(slug);
+    if (!url) return [slug, null];
+    try {
+      const res = await fetch(`${url}?t=${Date.now()}`, { cache: "no-store" });
+      return [slug, res.ok ? parseStartTime(await res.text()) : null];
+    } catch {
+      return [slug, null];
+    }
+  }));
+  const since = {};
+  for (const [slug, day] of found) if (day) since[slug] = day;
+  return since;
+}
+
+// The data last drawn, so a failed refresh keeps showing it.
+let LAST = null;
+
 async function load() {
-  let sites = [];
-  let issues = [];
-  let failed = false;
+  let sites = null;
+  let issues = null;
   try {
     const res = await fetch(`${SUMMARY_URL}?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(String(res.status));
     const data = await res.json();
     sites = Array.isArray(data) ? data : [];
   } catch {
-    failed = true;
+    sites = null;
   }
   try {
     const res = await fetch(ISSUES_URL, { headers: { Accept: "application/vnd.github+json" } });
     if (res.ok) {
       const data = await res.json();
-      issues = Array.isArray(data) ? data.filter((i) => !i.pull_request) : [];
+      if (Array.isArray(data)) issues = data.filter((i) => !i.pull_request);
     }
   } catch {
-    // Incidents stay empty when GitHub's API is unreachable or rate limited.
+    // GitHub's API unreachable or rate limited: keep the incidents last shown.
   }
-  window.__sites = sites;
-  const open = issues.filter((i) => i.state === "open");
-  renderHero(sites, open);
-  if (failed) {
+  if (sites === null) {
+    if (LAST) {
+      // Keep the last known state on screen; its stamp says how old it is.
+      if (issues !== null) render(LAST.sites, issues, LAST.at);
+      return;
+    }
+    render([], issues || [], new Date());
     $("headline").textContent = "Status data could not be loaded.";
     $("lede").replaceChildren(
       document.createTextNode("Try again in a minute, or see the incidents on "),
       el("a", { href: `https://github.com/${REPO}/issues`, text: "GitHub" }),
       document.createTextNode("."),
     );
+    return;
   }
-  renderActive(open);
-  renderComponents(sites, issues);
-  renderHistory(issues);
+  SINCE = { ...SINCE, ...(await loadSince()) };
+  const finalIssues = issues !== null ? issues : LAST ? LAST.issues : [];
+  const at = new Date();
+  LAST = { sites, issues: finalIssues, at };
+  writeCache({ at: at.toISOString(), sites, issues: finalIssues, since: SINCE });
+  render(sites, finalIssues, at);
 }
 
 window.__sites = [];
-renderSkeleton();
+const initial = pickSnapshot([window.__STATUS_SNAPSHOT, readCache()]);
+if (initial) {
+  SINCE = initial.since;
+  LAST = { sites: initial.sites, issues: initial.issues, at: new Date(initial.at) };
+  render(LAST.sites, LAST.issues, LAST.at);
+} else {
+  renderSkeleton();
+}
 load();
 setInterval(load, 5 * 60 * 1000);

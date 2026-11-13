@@ -31,8 +31,8 @@
 
     <div class="hero-grid">
       <div class="hero-copy">
-        <p class="mono kicker"><span>Status</span> <b id="updated">Checking…</b></p>
-        <h1 id="headline">Checking every service.</h1>
+        <p class="mono kicker"><span>Status</span> <b id="updated"></b></p>
+        <h1 id="headline">OhAuthCat status.</h1>
         <p class="lede" id="lede">Live status of OhAuthCat sign-in, directory sync, the management API, the dashboard and the setup portal.</p>
         <div class="actions">
           <a class="button" href="feed.xml" type="application/atom+xml">Subscribe to updates</a>
@@ -46,7 +46,7 @@
             <small>Right now</small>
             <span id="panel-title">Every service</span>
           </div>
-          <span class="pill" id="panel-pill" data-state="none">Checking</span>
+          <span class="pill" id="panel-pill" data-state="none">Loading</span>
         </div>
         <ol class="rows" id="now-rows"></ol>
         <div class="panel-foot mono" id="panel-foot">
@@ -103,7 +103,9 @@
 </footer>
 
 <div class="tip mono" id="tip" role="tooltip" hidden></div>
-<script src="app.js?v=3"></script>
+<script src="snapshot.js"></script>
+<script src="status-core.js?v=1"></script>
+<script src="app.js?v=4"></script>
 <script src="theme.js" defer></script>
 </body>
 </html>
