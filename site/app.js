@@ -4,7 +4,7 @@
 // check runs.
 "use strict";
 
-const REPO = "oh-auth-cat/status";
+const REPO = "ohauthcat/status";
 // A local preview (localhost) reads the sample data in ../preview instead.
 const PREVIEW = location.hostname === "localhost";
 const SUMMARY_URL = PREVIEW ? "../preview/summary.json" : `https://raw.githubusercontent.com/${REPO}/master/history/summary.json`;

@@ -3,8 +3,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { buildFeed, cleanTitle, escapeXml } from "./build-feed.mjs";
 
-const open = { title: "⚠️ SCIM has degraded performance", state: "open", created_at: "2026-10-31T09:00:00Z", closed_at: null, updated_at: "2026-10-31T09:05:00Z", html_url: "https://github.com/oh-auth-cat/status/issues/9" };
-const closed = { title: "🛑 Sign-in is down", state: "closed", created_at: "2026-10-28T03:12:00Z", closed_at: "2026-10-28T04:05:00Z", html_url: "https://github.com/oh-auth-cat/status/issues/8" };
+const open = { title: "⚠️ SCIM has degraded performance", state: "open", created_at: "2026-10-31T09:00:00Z", closed_at: null, updated_at: "2026-10-31T09:05:00Z", html_url: "https://github.com/ohauthcat/status/issues/9" };
+const closed = { title: "🛑 Sign-in is down", state: "closed", created_at: "2026-10-28T03:12:00Z", closed_at: "2026-10-28T04:05:00Z", html_url: "https://github.com/ohauthcat/status/issues/8" };
 
 test("lists incidents newest first with their state", () => {
   const xml = buildFeed([closed, open]);

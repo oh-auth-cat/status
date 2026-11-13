@@ -1,7 +1,7 @@
 # Upptime configuration for status.ohauthcat.com (handbook docs/24 §7).
 # The checks stay paused until launch: the Uptime, Response Time, Graphs and
 # Summary workflows are disabled and are switched on on go-live day.
-owner: oh-auth-cat
+owner: ohauthcat
 repo: status
 
 # One check per public component, on its production host. Outbound webhook
@@ -47,7 +47,7 @@ status-website:
     article+article{margin-top:0.75rem}
   name: OhAuthCat status
   introTitle: "OhAuthCat status"
-  introMessage: "Live status and uptime history of sign-in, SCIM, the management API, the dashboard and the setup portal. Incidents and post-mortems are posted here. Also at [oh-auth-cat.github.io/status](https://oh-auth-cat.github.io/status) if this domain does not resolve."
+  introMessage: "Live status and uptime history of sign-in, SCIM, the management API, the dashboard and the setup portal. Incidents and post-mortems are posted here. Also at [ohauthcat.github.io/status](https://ohauthcat.github.io/status) if this domain does not resolve."
   navbar:
     - title: Status
       href: /
