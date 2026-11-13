@@ -3,7 +3,9 @@
 # in the browser, so it only needs publishing when site/ changes. Upptime's
 # own Static Site CI is disabled so it never overwrites gh-pages. The incident
 # feed (feed.xml) is rebuilt on every publish, and an incident change publishes
-# again so subscribers see it.
+# again so subscribers see it. snapshot.js (the last known status, drawn on
+# first paint) is rebuilt on every publish and hourly, because Upptime's own
+# commits carry [skip ci] and never trigger this workflow.
 name: OhAuthCat status site
 on:
   push:
@@ -12,8 +14,11 @@ on:
       - "site/**"
       - ".github/workflows/ohauthcat-site.yml"
       - ".github/scripts/build-feed.mjs"
+      - ".github/scripts/build-snapshot.mjs"
   issues:
     types: [opened, edited, closed, reopened, labeled, unlabeled]
+  schedule:
+    - cron: "17 * * * *"
   workflow_dispatch:
 concurrency:
   group: ohauthcat-status-site
@@ -32,6 +37,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .github/scripts/build-feed.mjs site/feed.xml
+      - name: Build the status snapshot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node .github/scripts/build-snapshot.mjs site/snapshot.js history
       - name: Add the custom domain
         run: echo "status.ohauthcat.com" > site/CNAME
       - name: Publish to gh-pages
