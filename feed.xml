@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://status.ohauthcat.com/feed.xml</id>
+  <title>OhAuthCat status: incidents</title>
+  <link rel="alternate" href="https://status.ohauthcat.com/"/>
+  <link rel="self" href="https://status.ohauthcat.com/feed.xml"/>
+  <updated>2026-11-13T05:07:36Z</updated>
+  <author><name>OhAuthCat</name></author>
+  <entry>
+    <id>https://github.com/ohauthcat/status/issues/6</id>
+    <title>Investigating: Hosted sign-in pages is down</title>
+    <link rel="alternate" href="https://github.com/ohauthcat/status/issues/6"/>
+    <published>2026-11-13T05:07:34Z</published>
+    <updated>2026-11-13T05:07:36Z</updated>
+    <summary>Investigating since 2026-11-13T05:07:34Z.</summary>
+  </entry>
+</feed>
